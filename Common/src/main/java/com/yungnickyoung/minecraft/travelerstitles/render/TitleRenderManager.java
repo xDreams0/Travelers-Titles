@@ -167,6 +167,10 @@ public class TitleRenderManager {
         }
 
         Identifier biomeBaseKey = world.registryAccess().lookupOrThrow(Registries.BIOME).getKey(biomeHolder.value());
+        if (biomeBaseKey == null) {
+            TravelersTitlesCommon.LOGGER.warn("Skipping biome title because the current biome has no registry key: {}", biomeHolder.value());
+            return;
+        }
 
         if (
             biomeTitleRenderer.enabled &&
@@ -177,7 +181,7 @@ public class TitleRenderManager {
             String normalBiomeNameKey = Util.makeDescriptionId("biome", biomeBaseKey);
 
             // Ignore blacklisted biomes
-            if (biomeBaseKey != null && !TravelersTitlesCommon.CONFIG.biomes.biomeBlacklist.contains(biomeBaseKey.toString())) {
+            if (!TravelersTitlesCommon.CONFIG.biomes.biomeBlacklist.contains(biomeBaseKey.toString())) {
                 Component biomeTitle;
 
                 // We will only display name if entry for biome found
