@@ -12,17 +12,18 @@ permissions:
 jobs:
   build-and-smoke-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Java 25
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "25"
+          cache: gradle
 
       - name: Make Gradle executable
         run: chmod +x gradlew
@@ -33,20 +34,90 @@ jobs:
       - name: Build Fabric mod
         run: ./gradlew :Fabric:build --stacktrace --warning-mode all
 
-      - name: Smoke-test Fabric client startup
+      - name: Validate Minecraft 26.3 resources and jar
         shell: bash
         run: |
+          python3 - <<'PY'
+          import glob
+          import json
+          import zipfile
+          from pathlib import Path
+
+          root = Path(".")
+          en_path = root / "Common/src/main/resources/assets/travelerstitles/lang/en_us.json"
+          fr_path = root / "Common/src/main/resources/assets/travelerstitles/lang/fr_fr.json"
+          tag_path = root / "Common/src/main/resources/data/travelerstitles/tags/worldgen/biome/is_underground.json"
+          pack_path = root / "Common/src/main/resources/pack.mcmeta"
+
+          en = json.loads(en_path.read_text(encoding="utf-8"))
+          fr = json.loads(fr_path.read_text(encoding="utf-8"))
+          assert set(en) == set(fr), f"French key parity mismatch: EN={len(en)} FR={len(fr)}"
+
+          expected_fr = {
+              "travelerstitles.biome.minecraft.dappled_forest": "Forêt tachetée",
+              "travelerstitles.biome.minecraft.sulfur_caves": "Grottes de soufre",
+          }
+          for key, expected in expected_fr.items():
+              assert en.get(key), f"Missing English key: {key}"
+              assert fr.get(key) == expected, f"Unexpected French translation for {key}: {fr.get(key)!r}"
+
+          tag = json.loads(tag_path.read_text(encoding="utf-8"))
+          values = {v for v in tag["values"] if isinstance(v, str)}
+          for biome in ("minecraft:deep_dark", "minecraft:sulfur_caves"):
+              assert biome in values, f"Missing underground biome tag: {biome}"
+
+          pack = json.loads(pack_path.read_text(encoding="utf-8"))["pack"]
+          assert pack["min_format"] == [97, 1], pack
+          assert pack["max_format"] >= 121, pack
+
+          jars = [
+              Path(p) for p in glob.glob("Fabric/build/libs/*.jar")
+              if not p.endswith("-sources.jar") and not p.endswith("-javadoc.jar")
+          ]
+          assert len(jars) == 1, f"Expected exactly one production jar, got: {jars}"
+
+          jar = jars[0]
+          with zipfile.ZipFile(jar) as zf:
+              required = {
+                  "fabric.mod.json",
+                  "assets/travelerstitles/lang/en_us.json",
+                  "assets/travelerstitles/lang/fr_fr.json",
+                  "data/travelerstitles/tags/worldgen/biome/is_underground.json",
+                  "pack.mcmeta",
+              }
+              missing = required.difference(zf.namelist())
+              assert not missing, f"Jar is missing required resources: {sorted(missing)}"
+
+              jar_en = json.loads(zf.read("assets/travelerstitles/lang/en_us.json"))
+              jar_fr = json.loads(zf.read("assets/travelerstitles/lang/fr_fr.json"))
+              assert set(jar_en) == set(jar_fr), "Built jar lost French translation parity"
+              assert jar_fr["travelerstitles.biome.minecraft.dappled_forest"] == "Forêt tachetée"
+              assert jar_fr["travelerstitles.biome.minecraft.sulfur_caves"] == "Grottes de soufre"
+
+          print(f"Validated {len(en)} EN/FR keys and production jar: {jar}")
+          PY
+
+      - name: Install software OpenGL for client smoke test
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends xvfb libgl1-mesa-dri libglx-mesa0 mesa-utils
+
+      - name: Smoke-test Fabric client startup
+        shell: bash
+        env:
+          LIBGL_ALWAYS_SOFTWARE: "1"
+          GALLIUM_DRIVER: llvmpipe
+          SDL_VIDEODRIVER: x11
+          SDL_AUDIODRIVER: dummy
+          ALSOFT_DRIVERS: null
+        run: |
           set +e
-          timeout 120s xvfb-run -a ./gradlew :Fabric:runClient --no-daemon --stacktrace > fabric-client-smoke.log 2>&1
+          timeout 120s xvfb-run -a -s "-screen 0 1280x720x24 +extension GLX +render -noreset" \
+            ./gradlew :Fabric:runClient --no-daemon --stacktrace > fabric-client-smoke.log 2>&1
           code=$?
           set -e
 
           cat fabric-client-smoke.log
-
-          if [ "$code" -ne 0 ] && [ "$code" -ne 124 ]; then
-            echo "Fabric client exited unexpectedly with code $code"
-            exit "$code"
-          fi
 
           LOG="Fabric/runs/client/logs/latest.log"
           if [ ! -f "$LOG" ]; then
@@ -54,14 +125,24 @@ jobs:
             exit 1
           fi
 
-          if grep -Eqi "Mixin apply failed|EntrypointException|ModResolutionException|Exception in thread|Crash report saved to|Could not execute entrypoint" "$LOG"; then
-            echo "Fatal mod/runtime error detected."
+          if grep -Eqi "Mixin apply failed|EntrypointException|ModResolutionException|Exception in thread|Crash report saved to|Could not execute entrypoint|Failed to create backend" "$LOG"; then
+            echo "Fatal mod/runtime or graphics bootstrap error detected."
             cat "$LOG"
             exit 1
           fi
 
-          if ! grep -Eqi "Backend library|Reloading ResourceManager|OpenAL initialized|Setting user" "$LOG"; then
-            echo "Minecraft did not reach a recognizable client startup stage."
+          if [ "$code" -ne 0 ] && [ "$code" -ne 124 ]; then
+            echo "Fabric client exited unexpectedly with code $code"
+            exit "$code"
+          fi
+
+          if ! grep -Fq "travelerstitles 26.3-Fabric-6.2.0" "$LOG"; then
+            echo "Traveler's Titles was not loaded by Fabric."
+            exit 1
+          fi
+
+          if ! grep -Eqi "Reloading ResourceManager|OpenAL initialized|Sound engine started" "$LOG"; then
+            echo "Minecraft did not reach resource/sound initialization."
             cat "$LOG"
             exit 1
           fi
