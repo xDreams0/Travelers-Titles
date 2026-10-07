@@ -1,14 +1,12 @@
 {
   "travelerstitles.commands.biometitle.invalid": "\"%s\" does not seem to be a valid biome",
   "travelerstitles.commands.biometitle.notfound": "No title found for biome \"%s\"",
-
   "travelerstitles.minecraft.overworld.color": "ffffff",
   "travelerstitles.minecraft.overworld": "Overworld",
   "travelerstitles.minecraft.the_nether.color": "750909",
   "travelerstitles.minecraft.the_nether": "The Nether",
   "travelerstitles.minecraft.the_end.color": "4f219e",
   "travelerstitles.minecraft.the_end": "The End",
-
   "travelerstitles.aether.the_aether.color": "dde9f4",
   "travelerstitles.aether.the_aether": "The Aether",
   "travelerstitles.atlantis.atlantis.color": "336172",
@@ -203,7 +201,6 @@
   "biome.terralith.yellowstone": "Yellowstone",
   "biome.terralith.yosemite_cliffs": "Yosemite Cliffs",
   "biome.terralith.yosemite_lowlands": "Yosemite Lowlands",
-
   "biome.terralith.cave/andesite_caves": "Andesite Caves",
   "biome.terralith.cave/crystal_caves": "Crystal Caves",
   "biome.terralith.cave/deep_caves": "Deep Caves",
@@ -218,7 +215,6 @@
   "biome.terralith.cave/thermal_caves": "Thermal Caves",
   "biome.terralith.cave/tuff_caves": "Tuff Caves",
   "biome.terralith.cave/underground_jungle": "Underground Jungle",
-
   "biome.terralith.cave.andesite_caves": "Andesite Caves",
   "biome.terralith.cave.crystal_caves": "Crystal Caves",
   "biome.terralith.cave.deep_caves": "Deep Caves",
@@ -233,7 +229,6 @@
   "biome.terralith.cave.thermal_caves": "Thermal Caves",
   "biome.terralith.cave.tuff_caves": "Tuff Caves",
   "biome.terralith.cave.underground_jungle": "Underground Jungle",
-
   "biome.incendium.ash_barrens": "Ash Barrens",
   "biome.incendium.infernal_dunes": "Infernal Dunes",
   "biome.incendium.inverted_forest": "Inverted Forest",
@@ -242,11 +237,9 @@
   "biome.incendium.volcanic_deltas": "Volcanic Deltas",
   "biome.incendium.weeping_valley": "Weeping Valley",
   "biome.incendium.withered_forest": "Withered Forest",
-
   "biome.nullscape.crystal_peaks": "Crystal Peaks",
   "biome.nullscape.shadowlands": "Shadowlands",
   "biome.nullscape.void_barrens": "Void Barrens",
-
   "biome.bracken.dormis/bezerium": "Bezerium",
   "biome.bracken.dormis/golanium": "Golanium",
   "biome.bracken.dormis/hebronium": "Hebronium",
@@ -315,7 +308,6 @@
   "biome.bracken.the_underdark/titan_dripstone_cavern": "Titan Dripstone Cavern",
   "biome.bracken.varskspace/expanse": "Expanse",
   "biome.bracken.void/void": "Void",
-
   "biome.bro.river": "River",
   "biome.bro.saturated/basalt_climb": "Basalt Climb",
   "biome.bro.saturated/bone_canyon": "Bone Canyon",
@@ -342,7 +334,6 @@
   "biome.bro.void/void_inverse": "Void Inverse",
   "biome.bro.void/void.color": "000000",
   "biome.bro.void/void": "Void",
-
   "biome.limbo.agony.color": "000000",
   "biome.limbo.agony": "Agony",
   "biome.limbo.blossom.color": "000000",
@@ -359,7 +350,6 @@
   "biome.limbo.hope": "Hope",
   "biome.limbo.isolation.color": "000000",
   "biome.limbo.isolation": "Isolation",
-
   "biome.lightwoods/woods/cavern": "Cavern",
   "biome.lightwoods/woods/frosty_copse": "Frosty Copse",
   "biome.lightwoods/woods/growth_woodland": "Growth Woodland",
@@ -370,7 +360,6 @@
   "biome.lightwoods/woods/slopes": "Slopes",
   "biome.lightwoods/woods/spooky_stand": "Spooky Stand",
   "biome.lightwoods/woods/thicket": "Thicket",
-  
   "biome.the_afterdark.calcite_fields": "Calcite Fields",
   "biome.the_afterdark.creepy_snowfields": "Creepy Snowfields",
   "biome.the_afterdark.deep_afterdark": "Deep Afterdark",
@@ -379,9 +368,7 @@
   "biome.the_afterdark.lush_gardens": "Lush Gardens",
   "biome.the_afterdark.prismarine_peaks": "Prismarine Peaks",
   "biome.the_afterdark.prismarine_ponds": "Prismarine Ponds",
-
   "text.autoconfig.travelerstitles-fabric-26_1.title": "Traveler's Titles",
-
   "text.autoconfig.travelerstitles-fabric-26_1.option.biomes": "Biome Title Settings",
   "text.autoconfig.travelerstitles-fabric-26_1.option.biomes.@Tooltip": "Biome Title Settings",
   "text.autoconfig.travelerstitles-fabric-26_1.option.dimensions": "Dimension Title Settings",
@@ -390,7 +377,6 @@
   "text.autoconfig.travelerstitles-fabric-26_1.option.sound.@Tooltip[0]": "Sound Settings.",
   "text.autoconfig.travelerstitles-fabric-26_1.option.sound.@Tooltip[1]": "These will only be used if you add custom sounds via a resource pack.",
   "text.autoconfig.travelerstitles-fabric-26_1.option.sound.@Tooltip[2]": "For information on how to do this, visit the CurseForge page.",
-
   "text.autoconfig.travelerstitles-fabric-26_1.option.biomes.enabled": "Enable Biome Titles",
   "text.autoconfig.travelerstitles-fabric-26_1.option.biomes.textFadeInTime": "Text Fade-In Time",
   "text.autoconfig.travelerstitles-fabric-26_1.option.biomes.textFadeInTime.@Tooltip[0]": "How long the fade-in text effect lasts, in ticks.",
@@ -441,7 +427,6 @@
   "text.autoconfig.travelerstitles-fabric-26_1.option.biomes.onlyUpdateAtSurface.@Tooltip[0]": "If enabled, dimensions without ceilings (like the Overworld) will only",
   "text.autoconfig.travelerstitles-fabric-26_1.option.biomes.onlyUpdateAtSurface.@Tooltip[1]": "display biome titles when the player is exposed to the skylight.",
   "text.autoconfig.travelerstitles-fabric-26_1.option.biomes.onlyUpdateAtSurface.@Tooltip[2]": "This prevents biome titles from showing while the player is underground.",
-
   "text.autoconfig.travelerstitles-fabric-26_1.option.dimensions.enabled": "Enable Dimension Titles",
   "text.autoconfig.travelerstitles-fabric-26_1.option.dimensions.textFadeInTime": "Text Fade-In Time",
   "text.autoconfig.travelerstitles-fabric-26_1.option.dimensions.textFadeInTime.@Tooltip[0]": "How long the fade-in text effect lasts, in ticks.",
@@ -477,7 +462,6 @@
   "text.autoconfig.travelerstitles-fabric-26_1.option.dimensions.onlyUpdateAtSurface.@Tooltip[0]": "If enabled, dimensions without ceilings (like the Overworld) will only",
   "text.autoconfig.travelerstitles-fabric-26_1.option.dimensions.onlyUpdateAtSurface.@Tooltip[1]": "display dimension titles when the player is exposed to the skylight.",
   "text.autoconfig.travelerstitles-fabric-26_1.option.dimensions.onlyUpdateAtSurface.@Tooltip[2]": "This prevents dimension titles from showing while the player is underground.",
-
   "text.autoconfig.travelerstitles-fabric-26_1.option.sound.biomeVolume": "Biome Sound Effect Volume",
   "text.autoconfig.travelerstitles-fabric-26_1.option.sound.biomeVolume.@Tooltip": "The volume of the sound that plays when a biome title displays.",
   "text.autoconfig.travelerstitles-fabric-26_1.option.sound.biomePitch": "Biome Sound Effect Pitch",
@@ -485,5 +469,6 @@
   "text.autoconfig.travelerstitles-fabric-26_1.option.sound.dimensionVolume": "Dimension Sound Effect Volume",
   "text.autoconfig.travelerstitles-fabric-26_1.option.sound.dimensionVolume.@Tooltip": "The volume of the sound that plays when a dimension title displays.",
   "text.autoconfig.travelerstitles-fabric-26_1.option.sound.dimensionPitch": "Dimension Sound Effect Pitch",
-  "text.autoconfig.travelerstitles-fabric-26_1.option.sound.dimensionPitch.@Tooltip": "The pitch of the sound that plays when a dimension title displays."
+  "text.autoconfig.travelerstitles-fabric-26_1.option.sound.dimensionPitch.@Tooltip": "The pitch of the sound that plays when a dimension title displays.",
+  "travelerstitles.biome.minecraft.dappled_forest": "Dappled Forest"
 }
