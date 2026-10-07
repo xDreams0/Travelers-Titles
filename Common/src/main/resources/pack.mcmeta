@@ -1,6 +1,7 @@
 {
-    "pack": {
-        "description": "Traveler's Titles resources",
-        "pack_format": 46
-    }
+  "pack": {
+    "description": "Traveler's Titles resources",
+    "min_format": [97, 1],
+    "max_format": [97, 1]
+  }
 }
