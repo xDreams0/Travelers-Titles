@@ -1,10 +1,10 @@
 package com.yungnickyoung.minecraft.travelerstitles;
 
-import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.ModInitializer;
 
-public class TravelersTitlesFabric implements ClientModInitializer {
+public class TravelersTitlesFabric implements ModInitializer {
     @Override
-    public void onInitializeClient() {
+    public void onInitialize() {
         TravelersTitlesCommon.init();
     }
 }
