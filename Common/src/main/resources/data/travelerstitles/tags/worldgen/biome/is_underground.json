@@ -3,6 +3,8 @@
   "values": [
     "minecraft:lush_caves",
     "minecraft:dripstone_caves",
+    "minecraft:deep_dark",
+    "minecraft:sulfur_caves",
     {
       "id": "#forge:is_underground",
       "required": false
@@ -38,7 +40,8 @@
     {
       "id": "terralith:cave/granite_caves",
       "required": false
-    },    {
+    },
+    {
       "id": "terralith:cave/ice_caves",
       "required": false
     },
