@@ -53,13 +53,40 @@ jobs:
           fr = json.loads(fr_path.read_text(encoding="utf-8"))
           assert set(en) == set(fr), f"French key parity mismatch: EN={len(en)} FR={len(fr)}"
 
-          expected_fr = {
-              "travelerstitles.biome.minecraft.dappled_forest": "Forêt tachetée",
-              "travelerstitles.biome.minecraft.sulfur_caves": "Grottes de soufre",
+          vanilla_biomes = {
+              "badlands", "bamboo_jungle", "basalt_deltas", "beach", "birch_forest",
+              "cherry_grove", "cold_ocean", "crimson_forest", "dappled_forest",
+              "dark_forest", "deep_cold_ocean", "deep_dark", "deep_frozen_ocean",
+              "deep_lukewarm_ocean", "deep_ocean", "desert", "dripstone_caves",
+              "end_barrens", "end_highlands", "end_midlands", "eroded_badlands",
+              "flower_forest", "forest", "frozen_ocean", "frozen_peaks",
+              "frozen_river", "grove", "ice_spikes", "jagged_peaks", "jungle",
+              "lukewarm_ocean", "lush_caves", "mangrove_swamp", "meadow",
+              "mushroom_fields", "nether_wastes", "ocean", "old_growth_birch_forest",
+              "old_growth_pine_taiga", "old_growth_spruce_taiga", "pale_garden",
+              "plains", "river", "savanna", "savanna_plateau", "small_end_islands",
+              "snowy_beach", "snowy_plains", "snowy_slopes", "snowy_taiga",
+              "soul_sand_valley", "sparse_jungle", "stony_peaks", "stony_shore",
+              "sulfur_caves", "sunflower_plains", "swamp", "taiga", "the_end",
+              "the_void", "warm_ocean", "warped_forest", "windswept_forest",
+              "windswept_gravelly_hills", "windswept_hills", "windswept_savanna",
+              "wooded_badlands",
           }
-          for key, expected in expected_fr.items():
-              assert en.get(key), f"Missing English key: {key}"
-              assert fr.get(key) == expected, f"Unexpected French translation for {key}: {fr.get(key)!r}"
+
+          # Keep vanilla biome names delegated to biome.minecraft.* so resource
+          # packs such as Icons can prepend their font glyphs without TT masking them.
+          for biome in vanilla_biomes:
+              name_key = f"travelerstitles.biome.minecraft.{biome}"
+              assert name_key not in en, f"Vanilla biome name override blocks resource-pack compatibility: {name_key}"
+              assert name_key not in fr, f"French vanilla biome override blocks resource-pack compatibility: {name_key}"
+
+              color_key = f"{name_key}.color"
+              assert color_key in en, f"Missing vanilla biome color: {color_key}"
+              assert fr.get(color_key) == en[color_key], f"Locale color mismatch: {color_key}"
+              color = en[color_key]
+              assert isinstance(color, str) and len(color) == 6 and all(c in "0123456789abcdefABCDEF" for c in color), (
+                  f"Invalid RGB color for {color_key}: {color!r}"
+              )
 
           tag = json.loads(tag_path.read_text(encoding="utf-8"))
           values = {v for v in tag["values"] if isinstance(v, str)}
@@ -91,8 +118,11 @@ jobs:
               jar_en = json.loads(zf.read("assets/travelerstitles/lang/en_us.json"))
               jar_fr = json.loads(zf.read("assets/travelerstitles/lang/fr_fr.json"))
               assert set(jar_en) == set(jar_fr), "Built jar lost French translation parity"
-              assert jar_fr["travelerstitles.biome.minecraft.dappled_forest"] == "Forêt tachetée"
-              assert jar_fr["travelerstitles.biome.minecraft.sulfur_caves"] == "Grottes de soufre"
+              for biome in vanilla_biomes:
+                  name_key = f"travelerstitles.biome.minecraft.{biome}"
+                  color_key = f"{name_key}.color"
+                  assert name_key not in jar_en and name_key not in jar_fr
+                  assert jar_en[color_key] == jar_fr[color_key]
 
           print(f"Validated {len(en)} EN/FR keys and production jar: {jar}")
           PY
