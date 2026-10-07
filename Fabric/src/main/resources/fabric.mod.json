@@ -9,15 +9,15 @@
   ],
   "contact": {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/travelers-titles-fabric",
-    "sources": "https://github.com/yungnickyoung/Travelers-Titles",
-    "issues": "https://github.com/yungnickyoung/Travelers-Titles/issues",
+    "sources": "https://github.com/xDreams0/Travelers-Titles",
+    "issues": "https://github.com/xDreams0/Travelers-Titles/issues",
     "discord": "discord.gg/rns3beq"
   },
   "license": "${license}",
   "icon": "icon.png",
   "environment": "client",
   "entrypoints": {
-    "client": [
+    "main": [
       "com.yungnickyoung.minecraft.travelerstitles.TravelersTitlesFabric"
     ],
     "modmenu": [
@@ -33,7 +33,6 @@
     "fabric-api": ">=${fabric_version}",
     "minecraft": "${mc_version_range_fabric}",
     "cloth-config2": ">=${clothconfig_version_fabric}",
-    "java": ">=${java_version}",
-    "yungsapi": ">=${mc_version}-Fabric-${yungsapi_version}"
+    "java": ">=${java_version}"
   }
 }
