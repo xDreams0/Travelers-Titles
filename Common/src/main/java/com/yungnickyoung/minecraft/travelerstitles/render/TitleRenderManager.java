@@ -21,6 +21,8 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.dimension.DimensionType;
 
+import java.util.Objects;
+
 public class TitleRenderManager {
     public final TitleRenderer<Biome> biomeTitleRenderer = new TitleRenderer<>(
         TravelersTitlesCommon.CONFIG.biomes.recentBiomeCacheSize,
@@ -148,7 +150,7 @@ public class TitleRenderManager {
                 dimensionTitleRenderer.addRecentEntry(currDimension);
 
                 // Play dimension entry sound
-                player.playSound(SoundModule.DIMENSION.get(), (float) TravelersTitlesCommon.CONFIG.sound.dimensionVolume, (float) TravelersTitlesCommon.CONFIG.sound.dimensionPitch);
+                player.playSound(SoundModule.DIMENSION, (float) TravelersTitlesCommon.CONFIG.sound.dimensionVolume, (float) TravelersTitlesCommon.CONFIG.sound.dimensionPitch);
             }
         }
     }
@@ -169,7 +171,7 @@ public class TitleRenderManager {
         if (
             biomeTitleRenderer.enabled &&
             biomeTitleRenderer.cooldownTimer <= 0 &&
-            !biomeTitleRenderer.matchesAnyRecentEntry(b -> world.registryAccess().lookupOrThrow(Registries.BIOME).getKey(b) == biomeBaseKey)
+            !biomeTitleRenderer.matchesAnyRecentEntry(b -> Objects.equals(world.registryAccess().lookupOrThrow(Registries.BIOME).getKey(b), biomeBaseKey))
         ) {
             String overrideBiomeNameKey = Util.makeDescriptionId(TravelersTitlesCommon.MOD_ID + ".biome", biomeBaseKey);
             String normalBiomeNameKey = Util.makeDescriptionId("biome", biomeBaseKey);
@@ -214,7 +216,7 @@ public class TitleRenderManager {
                 // This ensures the biome sound doesn't overlap with the dimension and waystone sounds.
                 if (dimensionTitleRenderer.titleTimer <= 0) {
                     if (!CompatModule.isWaystonesLoaded || !Services.WAYSTONES.isRendering()) {
-                        player.playSound(SoundModule.BIOME.get(), (float) TravelersTitlesCommon.CONFIG.sound.biomeVolume, (float) TravelersTitlesCommon.CONFIG.sound.biomePitch);
+                        player.playSound(SoundModule.BIOME, (float) TravelersTitlesCommon.CONFIG.sound.biomeVolume, (float) TravelersTitlesCommon.CONFIG.sound.biomePitch);
                     }
                 }
             }
