@@ -21,4 +21,4 @@ plugins {
 }
 
 rootProject.name = 'travelerstitles'
-include("Common", "Fabric", "NeoForge")
+include("Common", "Fabric")
