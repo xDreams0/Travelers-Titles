@@ -109,7 +109,7 @@ jobs:
           GALLIUM_DRIVER: llvmpipe
           SDL_VIDEODRIVER: x11
           SDL_AUDIODRIVER: dummy
-          ALSOFT_DRIVERS: null
+          ALSOFT_DRIVERS: "null"
         run: |
           set +e
           timeout 120s xvfb-run -a -s "-screen 0 1280x720x24 +extension GLX +render -noreset" \
