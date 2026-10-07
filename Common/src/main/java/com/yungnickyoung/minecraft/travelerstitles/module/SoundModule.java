@@ -1,17 +1,25 @@
 package com.yungnickyoung.minecraft.travelerstitles.module;
 
 import com.yungnickyoung.minecraft.travelerstitles.TravelersTitlesCommon;
-import com.yungnickyoung.minecraft.yungsapi.api.autoregister.AutoRegister;
-import com.yungnickyoung.minecraft.yungsapi.api.autoregister.AutoRegisterSoundEvent;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvent;
 
-@AutoRegister(TravelersTitlesCommon.MOD_ID)
-public class SoundModule {
-    @AutoRegister("biome")
-    public static AutoRegisterSoundEvent BIOME = AutoRegisterSoundEvent.create();
+public final class SoundModule {
+    public static final SoundEvent BIOME = register("biome");
+    public static final SoundEvent DIMENSION = register("dimension");
+    public static final SoundEvent WAYSTONE = register("waystone");
 
-    @AutoRegister("dimension")
-    public static AutoRegisterSoundEvent DIMENSION = AutoRegisterSoundEvent.create();
+    private SoundModule() {
+    }
 
-    @AutoRegister("waystone")
-    public static AutoRegisterSoundEvent WAYSTONE = AutoRegisterSoundEvent.create();
+    public static void init() {
+        // Calling this method forces class initialization and registration.
+    }
+
+    private static SoundEvent register(String path) {
+        Identifier id = TravelersTitlesCommon.id(path);
+        return Registry.register(BuiltInRegistries.SOUND_EVENT, id, SoundEvent.createVariableRangeEvent(id));
+    }
 }
