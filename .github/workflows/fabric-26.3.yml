@@ -125,6 +125,14 @@ jobs:
                   assert jar_en[color_key] == jar_fr[color_key]
 
 
+          ui_source = (root / "Fabric/src/main/java/com/yungnickyoung/minecraft/travelerstitles/config/ConfigBiomesFabric.java").read_text(encoding="utf-8")
+          baker_source = (root / "Fabric/src/main/java/com/yungnickyoung/minecraft/travelerstitles/module/ConfigModuleFabric.java").read_text(encoding="utf-8")
+          icon_option = "text.autoconfig.travelerstitles-fabric-26_1.option.biomes.showBiomeIcons"
+          assert icon_option in en and icon_option in fr
+          assert icon_option + ".@Tooltip" in en and icon_option + ".@Tooltip" in fr
+          assert "public boolean showBiomeIcons = true;" in ui_source
+          assert "CONFIG.biomes.showBiomeIcons = configFabric.biomes.showBiomeIcons;" in baker_source
+
           # The glyph table is private to Traveler's Titles; Icons pack assets
           # are not copied or redistributed. Check atlas/font/Java map parity.
           import re

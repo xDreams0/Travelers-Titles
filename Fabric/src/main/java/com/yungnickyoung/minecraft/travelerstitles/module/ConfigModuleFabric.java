@@ -35,6 +35,7 @@ public class ConfigModuleFabric {
 
     public static void bakeConfig(TTConfigFabric configFabric) {
         TravelersTitlesCommon.CONFIG.biomes.enabled = configFabric.biomes.enabled;
+        TravelersTitlesCommon.CONFIG.biomes.showBiomeIcons = configFabric.biomes.showBiomeIcons;
         TravelersTitlesCommon.CONFIG.biomes.textFadeInTime = configFabric.biomes.textFadeInTime;
         TravelersTitlesCommon.CONFIG.biomes.textDisplayTime = configFabric.biomes.textDisplayTime;
         TravelersTitlesCommon.CONFIG.biomes.textFadeOutTime = configFabric.biomes.textFadeOutTime;

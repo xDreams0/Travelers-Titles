@@ -536,5 +536,7 @@
   "travelerstitles.biome.minecraft.windswept_gravelly_hills.color": "959D93",
   "travelerstitles.biome.minecraft.windswept_hills.color": "7F9A7D",
   "travelerstitles.biome.minecraft.windswept_savanna.color": "B3A15B",
-  "travelerstitles.biome.minecraft.wooded_badlands.color": "B77950"
+  "travelerstitles.biome.minecraft.wooded_badlands.color": "B77950",
+  "text.autoconfig.travelerstitles-fabric-26_1.option.biomes.showBiomeIcons": "Display Biome Icons",
+  "text.autoconfig.travelerstitles-fabric-26_1.option.biomes.showBiomeIcons.@Tooltip": "Display an icon before a biome title (no Icons pack required)."
 }

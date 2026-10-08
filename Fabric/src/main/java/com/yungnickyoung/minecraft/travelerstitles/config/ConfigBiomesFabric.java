@@ -5,6 +5,9 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 public class ConfigBiomesFabric {
     public boolean enabled = true;
 
+    @ConfigEntry.Gui.Tooltip
+    public boolean showBiomeIcons = true;
+
     @ConfigEntry.Gui.Tooltip(count = 2)
     public int textFadeInTime = 10;
 
