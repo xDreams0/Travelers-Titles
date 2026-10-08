@@ -124,6 +124,45 @@ jobs:
                   assert name_key not in jar_en and name_key not in jar_fr
                   assert jar_en[color_key] == jar_fr[color_key]
 
+
+          # The glyph table is private to Traveler's Titles; Icons pack assets
+          # are not copied or redistributed. Check atlas/font/Java map parity.
+          import re
+          import struct
+          font_file = root / "Common/src/main/resources/assets/travelerstitles/font/biome_icons.json"
+          atlas_file = root / "Common/src/main/resources/assets/travelerstitles/textures/font/biome_icons.png"
+          java_file = root / "Common/src/main/java/com/yungnickyoung/minecraft/travelerstitles/render/BiomeIcons.java"
+          font_data = json.loads(font_file.read_text(encoding="utf-8"))["providers"]
+          assert len(font_data) == 1
+          provider = font_data[0]
+          assert provider["type"] == "bitmap"
+          assert provider["file"] == "travelerstitles:font/biome_icons.png"
+          assert 0 <= provider["ascent"] <= provider["height"]
+          rows = provider["chars"]
+          assert len(set(map(len, rows))) == 1
+          assert len(rows[0]) == 8
+          source = java_file.read_text(encoding="utf-8")
+          match = re.search(r"BIOME_IDS = List.of\((.*?)\);", source, re.S)
+          assert match, "Could not locate Java biome glyph order"
+          ids = re.findall(r'"([a-z_]+)"', match.group(1))
+          assert set(ids) == vanilla_biomes, (len(ids), set(ids) ^ vanilla_biomes)
+          assert len(ids) == len(set(ids)) == 67
+          glyphs = "".join(rows)
+          assert all(ord(c) == 0xE100 + i for i, c in enumerate(glyphs[:len(ids)+1]))
+          assert set(glyphs[len(ids)+1:]) == {"\0"}, "Padding must use null glyphs"
+          png = atlas_file.read_bytes()
+          assert png[:8] == b"\x89PNG\r\n\x1a\n"
+          width, height = struct.unpack(">II", png[16:24])
+          assert (width, height) == (8 * 16, len(rows) * 16)
+
+          with zipfile.ZipFile(jar) as zf:
+              assert "assets/travelerstitles/font/biome_icons.json" in zf.namelist()
+              assert "assets/travelerstitles/textures/font/biome_icons.png" in zf.namelist()
+              assert zf.read("assets/travelerstitles/font/biome_icons.json") == font_file.read_bytes()
+              assert zf.read("assets/travelerstitles/textures/font/biome_icons.png") == png
+
+          print(f"Validated {len(ids)} vanilla biome icons + generic fallback in production jar.")
+
           print(f"Validated {len(en)} EN/FR keys and production jar: {jar}")
           PY
 

@@ -15,6 +15,8 @@ public class ConfigModule {
 
     public static class Biomes {
         public boolean enabled = true;
+        /** Draw original biome pictograms ahead of vanilla/modded biome names. */
+        public boolean showBiomeIcons = true;
         public int textFadeInTime = 10;
         public int textDisplayTime = 50;
         public int textFadeOutTime = 10;

@@ -2,6 +2,7 @@ package com.yungnickyoung.minecraft.travelerstitles.render;
 
 import com.yungnickyoung.minecraft.travelerstitles.TravelersTitlesCommon;
 import com.yungnickyoung.minecraft.travelerstitles.module.CompatModule;
+import com.yungnickyoung.minecraft.travelerstitles.render.BiomeIcons;
 import com.yungnickyoung.minecraft.travelerstitles.module.SoundModule;
 import com.yungnickyoung.minecraft.travelerstitles.module.TagModule;
 import com.yungnickyoung.minecraft.travelerstitles.services.Services;
@@ -204,6 +205,10 @@ public class TitleRenderManager {
                 } else {
                     biomeColorStr = biomeTitleRenderer.titleDefaultTextColor;
                 }
+
+                // Keep the complete translation Component, including any styles
+                // and pack-defined glyphs. Add our own icon only as a fallback.
+                biomeTitle = BiomeIcons.withIcon(biomeBaseKey, biomeTitle);
 
                 // No need to display if title hasn't changed
                 if (biomeTitleRenderer.displayedTitle != null && biomeTitle.getString().equals(biomeTitleRenderer.displayedTitle.getString())) {
