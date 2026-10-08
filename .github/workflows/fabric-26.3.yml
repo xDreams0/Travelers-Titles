@@ -133,44 +133,34 @@ jobs:
           assert "public boolean showBiomeIcons = true;" in ui_source
           assert "CONFIG.biomes.showBiomeIcons = configFabric.biomes.showBiomeIcons;" in baker_source
 
-          # The glyph table is private to Traveler's Titles; Icons pack assets
-          # are not copied or redistributed. Check atlas/font/Java map parity.
+          # The old PUA font is deliberately replaced by a full-colour HUD
+          # texture atlas. Validate exact order and source/compiled resources.
           import re
           import struct
-          font_file = root / "Common/src/main/resources/assets/travelerstitles/font/biome_icons.json"
-          atlas_file = root / "Common/src/main/resources/assets/travelerstitles/textures/font/biome_icons.png"
-          java_file = root / "Common/src/main/java/com/yungnickyoung/minecraft/travelerstitles/render/BiomeIcons.java"
-          font_data = json.loads(font_file.read_text(encoding="utf-8"))["providers"]
-          assert len(font_data) == 1
-          provider = font_data[0]
-          assert provider["type"] == "bitmap"
-          assert provider["file"] == "travelerstitles:font/biome_icons.png"
-          assert 0 <= provider["ascent"] <= provider["height"]
-          rows = provider["chars"]
-          assert len(set(map(len, rows))) == 1
-          assert len(rows[0]) == 8
+          atlas_file = root / "Common/src/main/resources/assets/travelerstitles/textures/gui/biome_thumbnails.png"
+          java_file = root / "Common/src/main/java/com/yungnickyoung/minecraft/travelerstitles/render/BiomeThumbnails.java"
+          renderer_file = root / "Common/src/main/java/com/yungnickyoung/minecraft/travelerstitles/render/TitleRenderer.java"
+          manager_file = root / "Common/src/main/java/com/yungnickyoung/minecraft/travelerstitles/render/TitleRenderManager.java"
           source = java_file.read_text(encoding="utf-8")
           match = re.search(r"BIOME_IDS = List.of\((.*?)\);", source, re.S)
-          assert match, "Could not locate Java biome glyph order"
+          assert match, "Missing thumbnail biome lookup"
           ids = re.findall(r'"([a-z_]+)"', match.group(1))
-          assert set(ids) == vanilla_biomes, (len(ids), set(ids) ^ vanilla_biomes)
           assert len(ids) == len(set(ids)) == 67
-          glyphs = "".join(rows)
-          assert all(ord(c) == 0xE100 + i for i, c in enumerate(glyphs[:len(ids)+1]))
-          assert set(glyphs[len(ids)+1:]) == {"\0"}, "Padding must use null glyphs"
+          assert set(ids) == vanilla_biomes, set(ids) ^ vanilla_biomes
           png = atlas_file.read_bytes()
-          assert png[:8] == b"\x89PNG\r\n\x1a\n"
-          width, height = struct.unpack(">II", png[16:24])
-          assert (width, height) == (8 * 16, len(rows) * 16)
-
+          assert png.startswith(b"\x89PNG\r\n\x1a\n")
+          assert struct.unpack(">II", png[16:24]) == (160, 180), "Expected 8x9 framed 20px pixel-art atlas"
+          assert "RenderPipelines.GUI_TEXTURED" in renderer_file.read_text(encoding="utf-8")
+          assert "BiomeThumbnails.indexFor(biomeBaseKey, biomeTitle)" in manager_file.read_text(encoding="utf-8")
           with zipfile.ZipFile(jar) as zf:
-              assert "assets/travelerstitles/font/biome_icons.json" in zf.namelist()
-              assert "assets/travelerstitles/textures/font/biome_icons.png" in zf.namelist()
-              assert zf.read("assets/travelerstitles/font/biome_icons.json") == font_file.read_bytes()
-              assert zf.read("assets/travelerstitles/textures/font/biome_icons.png") == png
-
-          print(f"Validated {len(ids)} vanilla biome icons + generic fallback in production jar.")
-
+              assert "assets/travelerstitles/textures/gui/biome_thumbnails.png" in zf.namelist()
+              assert zf.read("assets/travelerstitles/textures/gui/biome_thumbnails.png") == png
+              assert "assets/travelerstitles/font/biome_icons.json" not in zf.namelist()
+              assert "assets/travelerstitles/textures/font/biome_icons.png" not in zf.namelist()
+              assert any(name.endswith("/BiomeThumbnails.class") for name in zf.namelist())
+              assert not any(name.endswith("/BiomeIcons.class") for name in zf.namelist())
+          print("Validated 67 full-color biome thumbnails + modded-biome fallback.")
+          
           print(f"Validated {len(en)} EN/FR keys and production jar: {jar}")
           PY
 

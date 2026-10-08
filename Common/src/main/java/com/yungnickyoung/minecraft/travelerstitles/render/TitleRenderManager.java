@@ -2,7 +2,7 @@ package com.yungnickyoung.minecraft.travelerstitles.render;
 
 import com.yungnickyoung.minecraft.travelerstitles.TravelersTitlesCommon;
 import com.yungnickyoung.minecraft.travelerstitles.module.CompatModule;
-import com.yungnickyoung.minecraft.travelerstitles.render.BiomeIcons;
+import com.yungnickyoung.minecraft.travelerstitles.render.BiomeThumbnails;
 import com.yungnickyoung.minecraft.travelerstitles.module.SoundModule;
 import com.yungnickyoung.minecraft.travelerstitles.module.TagModule;
 import com.yungnickyoung.minecraft.travelerstitles.services.Services;
@@ -206,10 +206,6 @@ public class TitleRenderManager {
                     biomeColorStr = biomeTitleRenderer.titleDefaultTextColor;
                 }
 
-                // Keep the complete translation Component, including any styles
-                // and pack-defined glyphs. Add our own icon only as a fallback.
-                biomeTitle = BiomeIcons.withIcon(biomeBaseKey, biomeTitle);
-
                 // No need to display if title hasn't changed
                 if (biomeTitleRenderer.displayedTitle != null && biomeTitle.getString().equals(biomeTitleRenderer.displayedTitle.getString())) {
                     return;
@@ -217,7 +213,9 @@ public class TitleRenderManager {
 
                 // Set display
                 biomeTitleRenderer.setColor(biomeColorStr);
-                biomeTitleRenderer.displayTitle(biomeTitle, null);
+                biomeTitleRenderer.displayTitle(
+                    biomeTitle, null, BiomeThumbnails.indexFor(biomeBaseKey, biomeTitle)
+                );
                 biomeTitleRenderer.cooldownTimer = TravelersTitlesCommon.CONFIG.biomes.textCooldownTime;
                 biomeTitleRenderer.addRecentEntry(biomeHolder.value());
 

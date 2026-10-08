@@ -1,8 +1,8 @@
 package com.yungnickyoung.minecraft.travelerstitles.render;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.yungnickyoung.minecraft.travelerstitles.TravelersTitlesCommon;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
@@ -16,6 +16,8 @@ public class TitleRenderer<T> {
     public final LinkedList<T> recentEntries = new LinkedList<>();
     public Component displayedTitle = null;
     public Component displayedSubTitle = null;
+    /** -1 hides the vignette, otherwise index into the 8-column thumbnail atlas. */
+    public int displayedThumbnail = -1;
     public int titleTimer = 0;
     public int cooldownTimer = 0;
 
@@ -88,17 +90,33 @@ public class TitleRenderer<T> {
                 int alpha = opacity << 24 & 0xFF000000;
                 Font fontRenderer = Minecraft.getInstance().font;
                 int titleWidth = fontRenderer.width(displayedTitle);
+                // 12px (pre-scale) framed miniature + 3px between miniature and label.
+                int thumbnailSpace = displayedThumbnail >= 0 ? 15 : 0;
+                int combinedWidth = titleWidth + thumbnailSpace;
 
-                // Currently does nothing?
-                drawBackdrop(guiGraphics, -10, titleWidth, titleTextcolor | alpha);
-
-                // Determine x offset
+                // Determine centered bounds using both thumbnail and text.
                 int xOffset = this.isTextCentered
-                    ? this.titleXOffset + (-titleWidth / 2)
+                    ? this.titleXOffset - combinedWidth / 2
                     : this.titleXOffset;
 
-                // Render title
-                guiGraphics.text(fontRenderer, displayedTitle, xOffset, titleYOffset, titleTextcolor | alpha, showTextShadow);
+                if (displayedThumbnail >= 0) {
+                    // Draw the FULL-COLOR texture separately; the biome text tint must
+                    // not tint the picture. Apply only the title fade alpha.
+                    int u = displayedThumbnail % BiomeThumbnails.ATLAS_COLUMNS * BiomeThumbnails.TILE_SIZE;
+                    int v = displayedThumbnail / BiomeThumbnails.ATLAS_COLUMNS * BiomeThumbnails.TILE_SIZE;
+                    guiGraphics.blit(
+                        RenderPipelines.GUI_TEXTURED, BiomeThumbnails.ATLAS,
+                        xOffset, titleYOffset - 2, u, v,
+                        12, 12, BiomeThumbnails.TILE_SIZE, BiomeThumbnails.TILE_SIZE,
+                        BiomeThumbnails.ATLAS_COLUMNS * BiomeThumbnails.TILE_SIZE,
+                        BiomeThumbnails.ATLAS_ROWS * BiomeThumbnails.TILE_SIZE,
+                        alpha | 0x00FFFFFF
+                    );
+                }
+
+                // Biome names and dimension titles keep their original translations and colors.
+                guiGraphics.text(fontRenderer, displayedTitle, xOffset + thumbnailSpace,
+                    titleYOffset, titleTextcolor | alpha, showTextShadow);
                 guiGraphics.pose().popMatrix();
 
                 // Subtitle render. Currently unused
@@ -129,10 +147,14 @@ public class TitleRenderer<T> {
     }
 
     public void displayTitle(Component titleText, Component subtitleText) {
+        displayTitle(titleText, subtitleText, -1);
+    }
+
+    public void displayTitle(Component titleText, Component subtitleText, int thumbnailIndex) {
         displayedTitle = titleText;
+        displayedSubTitle = subtitleText;
+        displayedThumbnail = thumbnailIndex;
         titleTimer = titleFadeInTicks + titleDisplayTime + titleFadeOutTicks;
-        if (subtitleText != null)
-            displayedSubTitle = subtitleText;
     }
 
     public void clearTimer() {

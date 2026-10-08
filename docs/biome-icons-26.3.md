@@ -1,25 +1,24 @@
-# Biome icons for Minecraft 26.3
+# Framed biome thumbnail atlas for Minecraft 26.3 / Fabric
 
-Traveler's Titles embeds **original**, tiny glyphs for 67 vanilla biome IDs including
-`minecraft:dappled_forest` and `minecraft:sulfur_caves`, plus one generic icon for
-third-party / future biome IDs. Each glyph lives in its own U+E100…U+E143 slot
-of `travelerstitles:biome_icons`.
+Traveler's Titles renders mini **20x20 pixel-art biome landscapes in a
+Minecraft-style frame**, positioned before the translated biome title. The
+vignettes are rendered in the HUD with `GuiGraphicsExtractor.blit` and
+`RenderPipelines.GUI_TEXTURED`, not as font glyphs. Each scene uses its
+original colours; biome text retains its per-biome palette and fading.
 
-- Font: `assets/travelerstitles/font/biome_icons.json`
-- Texture: `assets/travelerstitles/textures/font/biome_icons.png`
-- Mapping: `BiomeIcons.java` (ordered, 8 glyphs per atlas row).
-- User toggle: `biomes.showBiomeIcons` (default `true`).
-- Palette: separate `travelerstitles.biome.minecraft.<id>.color` language keys.
-- Text: stays `Component.translatable("biome.minecraft.<id>")`, keeping localization.
-- If another pack includes an existing Private-Use-Area icon in that translation,
-  Traveler's Titles deliberately does not add a second icon.
-- A custom resource pack can **replace** these glyphs by overriding the font JSON
-  or the texture, without any modification to the title code.
+* Atlas: `assets/travelerstitles/textures/gui/biome_thumbnails.png`
+  (160x180 pixels, eight columns, nine rows).
+* Mapping: `BiomeThumbnails.java` (row-major, 67 vanilla biome IDs).
+* 26.3: includes `dappled_forest` (autumn tree) and `sulfur_caves`
+  (yellow crystals).
+* Atlas tile 67: fallback for unknown / modded biomes.
+* Existing `showBiomeIcons` user setting in Cloth Config controls thumbnails.
+* A resource pack may replace the atlas at the same path.
+* Biome names remain `Component.translatable("biome.minecraft.<id>")`;
+  translation packs can supply localized and styled text.
+* When a translation already includes a legacy Private-Use-Area pack glyph,
+  no extra thumbnail is added to avoid duplicates.
+* The images are original hand-authored pixel artwork; no third-party
+  resource pack art is copied or redistributed.
 
-The prior Icons pack included biome glyphs until v1.11.3; these were removed in
-v1.11.4. **Do not copy or redistribute Icons' assets**: its terms prohibit
-redistribution of modified or unmodified textures without permission.
-This project ships independent, procedurally drawn monochrome art, not copies.
-
-Rollback branch: `backup/26.3-before-biome-icons` (commit
-`3b3b641dc5ebf2e08011a1f803b787260280d4a4`).
+Code backup: `backup/26.3-before-pixel-biome-thumbnails`.
