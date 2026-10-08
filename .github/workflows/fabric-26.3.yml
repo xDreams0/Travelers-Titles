@@ -34,6 +34,15 @@ jobs:
       - name: Build Fabric mod
         run: ./gradlew :Fabric:build --stacktrace --warning-mode all
 
+      - name: Test title transition timing
+        shell: bash
+        run: |
+          mkdir -p build/title-transition-test
+          javac -d build/title-transition-test \
+            Common/src/main/java/com/yungnickyoung/minecraft/travelerstitles/render/TitleTransition.java \
+            tests/TitleTransitionSmokeTest.java
+          java -cp build/title-transition-test TitleTransitionSmokeTest
+
       - name: Validate Minecraft 26.3 resources and jar
         shell: bash
         run: |
@@ -132,6 +141,20 @@ jobs:
           assert icon_option + ".@Tooltip" in en and icon_option + ".@Tooltip" in fr
           assert "public boolean showBiomeIcons = true;" in ui_source
           assert "CONFIG.biomes.showBiomeIcons = configFabric.biomes.showBiomeIcons;" in baker_source
+
+          for group in ("biomes", "dimensions"):
+              transition_key = f"text.autoconfig.travelerstitles-fabric-26_1.option.{group}.animateTitleTransitions"
+              for locale in (en, fr):
+                  assert transition_key in locale and transition_key + ".@Tooltip" in locale
+              config_file = root / f"Fabric/src/main/java/com/yungnickyoung/minecraft/travelerstitles/config/Config{group.capitalize()}Fabric.java"
+              assert "public boolean animateTitleTransitions = true;" in config_file.read_text(encoding="utf-8")
+          config_baker = (root / "Fabric/src/main/java/com/yungnickyoung/minecraft/travelerstitles/module/ConfigModuleFabric.java").read_text(encoding="utf-8")
+          assert "CONFIG.biomes.animateTitleTransitions = configFabric.biomes.animateTitleTransitions;" in config_baker
+          assert "CONFIG.dimensions.animateTitleTransitions = configFabric.dimensions.animateTitleTransitions;" in config_baker
+          renderer_source = (root / "Common/src/main/java/com/yungnickyoung/minecraft/travelerstitles/render/TitleRenderer.java").read_text(encoding="utf-8")
+          assert "TitleTransition.sample(" in renderer_source
+          assert "guiGraphics.pose().translate(0f, transition.offsetY());" in renderer_source
+          assert "guiGraphics.pose().scale(transition.scale(), transition.scale());" in renderer_source
 
           # The old PUA font is deliberately replaced by a full-colour HUD
           # texture atlas. Validate exact order and source/compiled resources.

@@ -538,5 +538,9 @@
   "travelerstitles.biome.minecraft.windswept_savanna.color": "B3A15B",
   "travelerstitles.biome.minecraft.wooded_badlands.color": "B77950",
   "text.autoconfig.travelerstitles-fabric-26_1.option.biomes.showBiomeIcons": "Display Biome Icons",
-  "text.autoconfig.travelerstitles-fabric-26_1.option.biomes.showBiomeIcons.@Tooltip": "Display an icon before a biome title (no Icons pack required)."
+  "text.autoconfig.travelerstitles-fabric-26_1.option.biomes.showBiomeIcons.@Tooltip": "Display an icon before a biome title (no Icons pack required).",
+  "text.autoconfig.travelerstitles-fabric-26_1.option.biomes.animateTitleTransitions": "Animate title appearance and disappearance",
+  "text.autoconfig.travelerstitles-fabric-26_1.option.biomes.animateTitleTransitions.@Tooltip": "Smooth fade, gentle slide and subtle zoom. Disable for the classic fade-only effect.",
+  "text.autoconfig.travelerstitles-fabric-26_1.option.dimensions.animateTitleTransitions": "Animate title appearance and disappearance",
+  "text.autoconfig.travelerstitles-fabric-26_1.option.dimensions.animateTitleTransitions.@Tooltip": "Smooth fade, gentle slide and subtle zoom. Disable for the classic fade-only effect."
 }

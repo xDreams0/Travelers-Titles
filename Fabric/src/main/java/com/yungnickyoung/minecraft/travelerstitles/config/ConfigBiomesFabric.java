@@ -8,6 +8,9 @@ public class ConfigBiomesFabric {
     @ConfigEntry.Gui.Tooltip
     public boolean showBiomeIcons = true;
 
+    @ConfigEntry.Gui.Tooltip
+    public boolean animateTitleTransitions = true;
+
     @ConfigEntry.Gui.Tooltip(count = 2)
     public int textFadeInTime = 10;
 

@@ -7,7 +7,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
-import net.minecraft.util.Mth;
 
 import java.util.LinkedList;
 import java.util.function.Predicate;
@@ -34,6 +33,8 @@ public class TitleRenderer<T> {
     public int titleXOffset;
     public int titleYOffset;
     public boolean isTextCentered;
+    /** Movement/zoom are optional; fade remains available without them. */
+    public boolean animateTransitions = false;
 
     public TitleRenderer(
         int maxRecentListSize,
@@ -64,24 +65,23 @@ public class TitleRenderer<T> {
 
     public void renderText(float partialTicks, GuiGraphicsExtractor guiGraphics) {
         if (displayedTitle != null && titleTimer > 0) {
-            float age = (float) titleTimer - partialTicks;
-            int opacity = 255;
-            if (titleTimer > titleFadeOutTicks + titleDisplayTime) {
-                float r = (float) (titleFadeInTicks + titleDisplayTime + titleFadeOutTicks) - age;
-                opacity = (int) (r * 255.0F / (float) titleFadeInTicks);
-            }
-
-            if (titleTimer <= titleFadeOutTicks) {
-                opacity = (int) (age * 255.0F / (float) titleFadeOutTicks);
-            }
-
-            opacity = Mth.clamp(opacity, 0, 255);
+            TitleTransition.Frame transition = TitleTransition.sample(
+                titleTimer, partialTicks, titleFadeInTicks, titleDisplayTime,
+                titleFadeOutTicks, animateTransitions
+            );
+            int opacity = transition.opacity();
             if (opacity > 8) {
                 // Set up render system
                 guiGraphics.pose().pushMatrix();
                 if (this.isTextCentered) {
                     guiGraphics.pose().translate(Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2f,
                                                  (Minecraft.getInstance().getWindow().getGuiScaledHeight() / 2f));
+                }
+                if (animateTransitions) {
+                    // Apply to the entire title group: full-color miniature, text,
+                    // and optional subtitle move and scale in perfect sync.
+                    guiGraphics.pose().translate(0f, transition.offsetY());
+                    guiGraphics.pose().scale(transition.scale(), transition.scale());
                 }
 
                 // Render title

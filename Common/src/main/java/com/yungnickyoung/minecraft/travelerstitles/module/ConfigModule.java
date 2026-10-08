@@ -17,6 +17,7 @@ public class ConfigModule {
         public boolean enabled = true;
         /** Draw original biome pictograms ahead of vanilla/modded biome names. */
         public boolean showBiomeIcons = true;
+        public boolean animateTitleTransitions = true;
         public int textFadeInTime = 10;
         public int textDisplayTime = 50;
         public int textFadeOutTime = 10;
@@ -35,6 +36,7 @@ public class ConfigModule {
 
     public static class Dimensions {
         public boolean enabled = true;
+        public boolean animateTitleTransitions = true;
         public int textFadeInTime = 10;
         public int textDisplayTime = 70;
         public int textFadeOutTime = 20;
@@ -83,6 +85,7 @@ public class ConfigModule {
         // Biome
         TravelersTitlesCommon.titleManager.biomeTitleRenderer.maxRecentListSize = TravelersTitlesCommon.CONFIG.biomes.recentBiomeCacheSize;
         TravelersTitlesCommon.titleManager.biomeTitleRenderer.enabled = TravelersTitlesCommon.CONFIG.biomes.enabled;
+        TravelersTitlesCommon.titleManager.biomeTitleRenderer.animateTransitions = TravelersTitlesCommon.CONFIG.biomes.animateTitleTransitions;
         TravelersTitlesCommon.titleManager.biomeTitleRenderer.titleFadeInTicks = TravelersTitlesCommon.CONFIG.biomes.textFadeInTime;
         TravelersTitlesCommon.titleManager.biomeTitleRenderer.titleDisplayTime = TravelersTitlesCommon.CONFIG.biomes.textDisplayTime;
         TravelersTitlesCommon.titleManager.biomeTitleRenderer.titleFadeOutTicks = TravelersTitlesCommon.CONFIG.biomes.textFadeOutTime;
@@ -95,6 +98,7 @@ public class ConfigModule {
 
         // Dimension
         TravelersTitlesCommon.titleManager.dimensionTitleRenderer.enabled = TravelersTitlesCommon.CONFIG.dimensions.enabled;
+        TravelersTitlesCommon.titleManager.dimensionTitleRenderer.animateTransitions = TravelersTitlesCommon.CONFIG.dimensions.animateTitleTransitions;
         TravelersTitlesCommon.titleManager.dimensionTitleRenderer.titleFadeInTicks = TravelersTitlesCommon.CONFIG.dimensions.textFadeInTime;
         TravelersTitlesCommon.titleManager.dimensionTitleRenderer.titleDisplayTime = TravelersTitlesCommon.CONFIG.dimensions.textDisplayTime;
         TravelersTitlesCommon.titleManager.dimensionTitleRenderer.titleFadeOutTicks = TravelersTitlesCommon.CONFIG.dimensions.textFadeOutTime;

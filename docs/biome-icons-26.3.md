@@ -22,3 +22,19 @@ original colours; biome text retains its per-biome palette and fading.
   resource pack art is copied or redistributed.
 
 Code backup: `backup/26.3-before-pixel-biome-thumbnails`.
+
+## Appearance and disappearance animations
+
+The whole title group (framed biome illustration, translated name, and optional
+subtitle) shares a single smooth animation: a subtle 8px upward slide and
+0.94→1.00 scale on entry; a gentle 6px upward drift and 1.00→0.96
+scale on exit. Both transitions use the existing configurable fade durations,
+with eased opacity, and stop moving during the title's hold interval.
+
+Cloth Config / Mod Menu toggles are available independently for biome titles
+and dimension titles (`animateTitleTransitions`, enabled by default).
+Disabling movement keeps the classic opacity-only fade. Waystone behaviour
+is unchanged. No animation alters the pixels inside the framed thumbnail.
+
+The timing curves are pure Java (`TitleTransition.java`) and tested with
+`tests/TitleTransitionSmokeTest.java` in the Fabric 26.3 CI workflow.

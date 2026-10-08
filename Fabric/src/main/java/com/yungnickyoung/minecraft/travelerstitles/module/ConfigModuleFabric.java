@@ -36,6 +36,7 @@ public class ConfigModuleFabric {
     public static void bakeConfig(TTConfigFabric configFabric) {
         TravelersTitlesCommon.CONFIG.biomes.enabled = configFabric.biomes.enabled;
         TravelersTitlesCommon.CONFIG.biomes.showBiomeIcons = configFabric.biomes.showBiomeIcons;
+        TravelersTitlesCommon.CONFIG.biomes.animateTitleTransitions = configFabric.biomes.animateTitleTransitions;
         TravelersTitlesCommon.CONFIG.biomes.textFadeInTime = configFabric.biomes.textFadeInTime;
         TravelersTitlesCommon.CONFIG.biomes.textDisplayTime = configFabric.biomes.textDisplayTime;
         TravelersTitlesCommon.CONFIG.biomes.textFadeOutTime = configFabric.biomes.textFadeOutTime;
@@ -51,6 +52,7 @@ public class ConfigModuleFabric {
         TravelersTitlesCommon.CONFIG.biomes.onlyUpdateAtSurface = configFabric.biomes.onlyUpdateAtSurface;
         TravelersTitlesCommon.CONFIG.biomes.biomeBlacklist = parseList(configFabric.biomes.biomeBlacklist, "Blacklisted Biomes");
         TravelersTitlesCommon.CONFIG.dimensions.enabled = configFabric.dimensions.enabled;
+        TravelersTitlesCommon.CONFIG.dimensions.animateTitleTransitions = configFabric.dimensions.animateTitleTransitions;
         TravelersTitlesCommon.CONFIG.dimensions.textFadeInTime = configFabric.dimensions.textFadeInTime;
         TravelersTitlesCommon.CONFIG.dimensions.textDisplayTime = configFabric.dimensions.textDisplayTime;
         TravelersTitlesCommon.CONFIG.dimensions.textFadeOutTime = configFabric.dimensions.textFadeOutTime;
