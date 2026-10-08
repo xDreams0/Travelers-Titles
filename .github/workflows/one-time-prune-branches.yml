@@ -1,0 +1,38 @@
+# One-time maintenance, automatically removed after execution.
+name: One-time stale branch cleanup
+on:
+  push:
+    branches:
+      - "26.3"
+permissions:
+  contents: write
+jobs:
+  prune:
+    if: github.repository == 'xDreams0/Travelers-Titles'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete only pre-approved, unchanged stale refs
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          while read -r branch expected_sha; do
+            test -n "$branch" || continue
+            case "$branch" in
+              backup/*|tmp/*) ;;
+              *) echo "::error::Unexpected branch name $branch"; exit 1 ;;
+            esac
+            current_sha="$(gh api "repos/$GH_REPO/git/ref/heads/$branch" --jq '.object.sha')"
+            if [ "$current_sha" != "$expected_sha" ]; then
+              echo "::error::Ref $branch moved from $expected_sha to $current_sha; refusing deletion."
+              exit 1
+            fi
+            echo "Deleting verified stale branch $branch"
+            gh api --method DELETE "repos/$GH_REPO/git/refs/heads/$branch"
+          done <<'STALE_BRANCHES'
+          backup/26.3-before-biome-icons 3b3b641dc5ebf2e08011a1f803b787260280d4a4
+          backup/26.3-before-pixel-biome-thumbnails cc15694526871ca02ec8af86d8ef9caca27b0537
+          backup/26.3-before-title-transitions 1bd0bbd03e56fca7b24c0c1dd4d00ce49a3c684d
+          STALE_BRANCHES

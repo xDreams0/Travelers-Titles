@@ -31,8 +31,18 @@ jobs:
       - name: Verify Gradle
         run: ./gradlew --version
 
+      - name: Resolve unique fork version
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE_VERSION="$(sed -n 's/^version=//p' gradle.properties | head -n 1)"
+          test -n "$BASE_VERSION"
+          FORK_VERSION="${BASE_VERSION}+xdreams.${GITHUB_SHA:0:8}"
+          echo "FORK_VERSION=$FORK_VERSION" >> "$GITHUB_ENV"
+          echo "Build version: $FORK_VERSION"
+
       - name: Build Fabric mod
-        run: ./gradlew :Fabric:build --stacktrace --warning-mode all
+        run: ./gradlew -Pversion="${FORK_VERSION}" :Fabric:build --stacktrace --warning-mode all
 
       - name: Test title transition timing
         shell: bash
@@ -184,6 +194,13 @@ jobs:
               assert not any(name.endswith("/BiomeIcons.class") for name in zf.namelist())
           print("Validated 67 full-color biome thumbnails + modded-biome fallback.")
           
+          import os
+          mod_meta = json.loads(zipfile.ZipFile(jar).read("fabric.mod.json"))
+          expected_version = f"26.3-Fabric-{os.environ['FORK_VERSION']}"
+          assert mod_meta["version"] == expected_version, (mod_meta["version"], expected_version)
+          assert os.environ["FORK_VERSION"] in jar.name, jar.name
+          print(f"Validated unique fork version: {expected_version}")
+
           print(f"Validated {len(en)} EN/FR keys and production jar: {jar}")
           PY
 
@@ -203,7 +220,7 @@ jobs:
         run: |
           set +e
           timeout 75s xvfb-run -a -s "-screen 0 1280x720x24 +extension GLX +render -noreset" \
-            ./gradlew :Fabric:runClient --no-daemon --stacktrace > fabric-client-smoke.log 2>&1
+            ./gradlew -Pversion="${FORK_VERSION}" :Fabric:runClient --no-daemon --stacktrace > fabric-client-smoke.log 2>&1
           code=$?
           set -e
 
